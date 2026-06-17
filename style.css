@@ -1,0 +1,238 @@
+/* --- ページ全体の設定 ----------------------------------------------------------------- */
+/* スムーズにスクロールを有効 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ストライプ背景（ベース） */
+body {
+  background: repeating-linear-gradient(
+    -45deg,       /* 斜め方向 */
+    #000 0px,   /* 黒 */
+    #000 20px,
+    #111 20px,  /* 濃いグレー */
+    #111 40px
+  );
+
+  color: #fff; /* 白文字 */
+  font-family: "Arial Black", sans-serif; /* 太めのフォントでP5感 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 赤いアクセント（光の層） */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom right,
+    transparent 0%,
+    transparent 70%,
+    rgba(230, 0, 18, 0.2) 100%
+  );
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* コミック風ドット（質感の層） */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#222 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --- 全体コンテナ ------------------------------------------------------------------------ */
+.container {
+  padding: 40px;
+}
+
+/* ヘッダー（名前部分） */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* タイトル（名前） */
+.title {
+  font-size: 48px;
+  color: #fff;
+  text-shadow: 4px 4px 0 #e60012; /* 赤い影でP5風 */
+}
+
+/* 各セクションの箱（アニメーション前の初期状態） */
+.section {
+  background: #111; /* 少し明るい黒 */
+  padding: 30px;
+  margin-bottom: 40px;
+  border-left: 10px solid #e60012; /* 左に赤ライン */
+
+  /* ▼ フェードイン用の初期状態 ▼ */
+  opacity: 0; 
+  transform: translateX(-50px) skewX(-5deg); /* 左にずらす＋傾き */
+  transition: all 0.3s ease-out;    /* アニメーション速度 */
+}
+
+/* 画面内に入ったら表示する */
+.section.show {
+  opacity: 1; /* 表示 */
+  transform: translateX(0) skewX(-5deg); /* 元の位置に戻す */
+}
+
+/* --- セクション ---------------------------------------------------------------------------- */
+/* タイトル本体（初期状態） */
+.section-title {
+  font-size: 28px;
+  margin: 0 0 10px;
+  position: relative;
+  z-index: 1;
+
+  opacity: 0;
+  transform: translateX(-20px); /* ← 初期位置を左にずらす（アニメーションの動きは左→右に動く） */
+  transition: all 0.2s ease-out;   /* アニメーション速度 */
+  transition-delay: 0.25s; /* セクションのアニメーションが終わってからの待ち時間 */
+}
+
+/* セクションが表示されたらタイトル本体も表示 */
+.section.show .section-title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* セクションタイトルの影 */
+.section-title::after {
+  content: attr(data-text); /* タイトル文字をコピー */
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  color: #e60012;
+  z-index: -1;
+
+  /* 影の最終位置（右下） */
+  transform: translate(6px, 2px);
+
+  /* 初期状態：横幅ゼロ */
+  clip-path: inset(0 100% 0 0);
+
+  opacity: 1;   /* 影は透明にしない（クリップで隠す） */
+  transition: clip-path 0.2s ease-out;  /* アニメーション速度 */
+  transition-delay: 0.4s; /* セクションタイトルのアニメーションが終わってからの待ち時間 */
+}
+
+.section.show .section-title::after {
+  clip-path: inset(0 0 0 0);
+}
+
+/* 小見出し（sub-block）の初期状態 */
+.sub-block {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease-out;
+}
+
+/* セクションが表示されたら sub-block も表示 */
+.sub-block.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 小見出しタイトル */
+.sub-title {
+  font-size: 20px;
+  margin: 0 0 6px;
+  padding-left: 10px;
+  border-left: 4px solid #e60012;
+  font-weight: bold;
+  transform: skewX(5deg);
+}
+
+/* 小見出しのテキスト */
+.sub-text {
+  margin-bottom: 40px;
+  line-height: 1.6;
+  white-space: pre-line; /* ← 改行をそのまま反映 */
+  transform: skewX(5deg);
+}
+
+
+/* 後で消す */
+/* スクロール用の大きな空白セクション */
+.spacer {
+  height: 600px; /* 好きな高さに調整できる */
+  background: #000; /* 黒背景でP5デザインと統一 */
+}
+
+/* --- ボタンUI -------------------------------------------------------------------------------- */
+/* ナビ全体 */
+.top-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  margin-top: 20px;
+}
+
+/* ボタン本体 */
+.nav-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  border: 3px solid #e60012;
+  transform: skewX(-10deg);
+  transition: 0.2s ease-out;
+  position: relative;
+}
+
+/* ホバー時の赤い光 */
+.nav-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: #e60012;
+  z-index: -1;
+  transition: width 0.2s ease-out;
+}
+
+/* ホバーで赤がビッと広がる */
+.nav-btn:hover::after {
+  width: 100%;
+}
+
+/* ホバー時の文字色 */
+.nav-btn:hover {
+  color: #000;
+}
+
+/* --- リンク（URL）UI ------------------------------------------------------------------------- */
+.sub-text a {
+  color: #e60012;
+  font-weight: bold;
+  text-decoration: none;
+  border-bottom: 2px solid #e60012;
+  padding-bottom: 2px;
+  transition: 0.2s;
+}
+
+.sub-text a:hover {
+  color: #fff;
+  background: #e60012;
+}
